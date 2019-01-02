@@ -40,8 +40,8 @@ squidexApi.createMember = (member) => new Promise((resolve, reject) => {
   var url = squidexApi.url + '/api/content/' + squidexApi.appName + '/members?publish=true'
   setTimeout(() => {
     try {
-      makeXMLHTTPRequest({url: url, method: 'POST', data: '{ username: { iv: \'' + member.username + '\' }, password: { iv: \'' + member.password + '\' }}'}).then((value) => {
-        resolve({ id: value.id, username: value.data.username.iv })
+      makeXMLHTTPRequest({url: url, method: 'POST', data: '{ name: { iv: \'' + member.name + '\' }, username: { iv: \'' + member.username + '\' }, password: { iv: \'' + member.password + '\' }}'}).then((value) => {
+        resolve({ id: value.id, username: value.data.username.iv, name: value.data.name.iv })
       }, (reason) => {
         reject(new Error(reason))
       })
@@ -80,7 +80,7 @@ squidexApi.authenticateMember = (member) => new Promise((resolve, reject) => {
       makeXMLHTTPRequest({url: url, method: 'GET'}).then((value) => {
         var members = JSON.parse(value)
         if (members.total === 1 && hash.digest('hex') === members.items[0].data.password.iv) {
-          resolve({ id: members.items[0].id, username: members.items[0].data.username.iv })
+          resolve({ id: members.items[0].id, username: members.items[0].data.username.iv, name: members.items[0].data.name.iv })
         } else {
           reject(new Error('User details incorrect'))
         }

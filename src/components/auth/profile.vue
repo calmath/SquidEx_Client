@@ -10,13 +10,13 @@
       <button type="edit" v-on:click="edit">Edit</button>
     </div>  
     <div v-if="editting">
-      <form class="register" @submit.prevent="register">
+      <form class="register" @submit.prevent="update">
         <label>User name</label>
-        <input required v-model="username" type="text" placeholder="Snoopy"/>
+        <input required v-model="username" type="text"/>
         <label>Password</label>
-        <input required v-model="password" type="password" placeholder="Password"/>
+        <input required v-model="password" type="password"/>
         <hr/>
-        <button type="submit">Register</button>
+        <button type="submit">Update</button>
       </form>
     </div>
   </div>
@@ -55,9 +55,12 @@ export default {
     methods: {
       edit: function () {
         this.editting = true
+        this.username = this.profile.username
+        this.password = this.profile.password
       },
       update: function () {
-        // const { username, password } = this
+        const { username } = this
+        alert(username)
         // this.$store.dispatch(REGISTER_REQUEST, { username, password }).then(() => {
         //  this.$router.push({path: ''})
         // })
