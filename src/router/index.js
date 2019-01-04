@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from 'components/home'
+import Feed from 'components/feed'
 import Login from 'components/auth'
 import Register from 'components/auth/register'
 import Profile from 'components/auth/profile'
@@ -31,6 +32,12 @@ export default new Router({
       path: '/',
       name: 'Home',
       component: Home,
+    },
+    {
+      path: '/feed',
+      name: 'Feed',
+      component: Feed,
+      beforeEnter: ifAuthenticated,
     },
     {
       path: '/profile',

@@ -6,6 +6,11 @@
           <img src="../../assets/logo.svg" width="40px"/><strong>Calmath</strong>
         </router-link>
       </li>
+      <li>
+        <router-link class="brand" to="/feed/">
+          <strong>Feed</strong>
+        </router-link>
+      </li>
     </ul>
     <ul>
       <li v-if="isAuthenticated">
@@ -38,6 +43,7 @@
 
     ul{
       display: flex;
+      align-items: center;
       &:first-child{
         flex-grow: 1;
       }
@@ -49,7 +55,6 @@
   .brand {
     display: flex;
     align-items: center;
-
   }
   .logout {
     &:hover {

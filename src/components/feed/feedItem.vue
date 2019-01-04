@@ -1,7 +1,7 @@
 <template>
   <div class="feed-item">
-    <h1>{{feed.name}}</h1>
-    <p>{{feed.content}}</p>
+    <h1 v-text="feed.name"></h1>
+    <p v-html="feed.content"></p>
   </div>
 </template>
 

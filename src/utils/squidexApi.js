@@ -1,3 +1,5 @@
+import squidexModels from 'utils/squidexModels'
+
 // const bcrypt = require('bcrypt')
 const crypto = require('crypto')
 // const saltRounds = 10
@@ -84,6 +86,23 @@ squidexApi.authenticateMember = (member) => new Promise((resolve, reject) => {
         } else {
           reject(new Error('User details incorrect'))
         }
+      }, (reason) => {
+        reject(new Error(reason))
+      })
+    } catch (err) {
+      reject(new Error(err))
+    }
+  }, 1000)
+})
+
+squidexApi.getFeeds = (token) => new Promise((resolve, reject) => {
+  squidexApi.authToken = token
+  var url = squidexApi.url + '/api/content/' + squidexApi.appName + '/feeds'
+  setTimeout(() => {
+    try {
+      makeXMLHTTPRequest({url: url, method: 'GET'}).then((value) => {
+        var feeds = JSON.parse(value)
+        resolve({ total: feeds.total, feeds: squidexModels.transformFeeds(feeds.items) })
       }, (reason) => {
         reject(new Error(reason))
       })
