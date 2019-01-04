@@ -127,7 +127,14 @@ const webpackConfig = merge(baseWebpackConfig, {
         'dist/*.{js,css}'
       ],
       stripPrefix: '/'
-    })
+    }),
+    // robots.txt & sitemap.xml
+    new CopyWebpackPlugin([
+      {
+        from: path.resolve(__dirname, '../src/assets/seo/'),
+        to: config.build.assetsRoot
+      }
+    ])
   ]
 })
 
