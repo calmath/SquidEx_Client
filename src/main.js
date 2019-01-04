@@ -7,6 +7,20 @@ import store from './store'
 import Loading from 'components/lib/loading'
 import CenterContainer from 'components/lib/center-container'
 
+const prod = process.env.NODE_ENV === 'production'
+const shouldSW = 'serviceWorker' in navigator && prod
+const shouldSWDev = 'serviceWorker' in navigator && !prod
+
+if (shouldSW) {
+  navigator.serviceWorker.register('/service-worker.js').then(() => {
+    console.log('Service Worker Registered!')
+  })
+} else if (shouldSWDev) {
+  navigator.serviceWorker.register('/service-worker-dev.js').then(() => {
+    console.log('Service Worker Registered!')
+  })
+}
+
 Vue.config.productionTip = false
 
 Vue.component('loading', Loading)
