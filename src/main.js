@@ -6,6 +6,7 @@ import router from './router'
 import store from './store'
 import Loading from 'components/lib/loading'
 import CenterContainer from 'components/lib/center-container'
+import * as VueGoogleMaps from 'vue2-google-maps'
 
 const prod = process.env.NODE_ENV === 'production'
 const shouldSW = 'serviceWorker' in navigator && prod
@@ -22,6 +23,12 @@ if (shouldSW) {
 }
 
 Vue.config.productionTip = false
+
+Vue.use(VueGoogleMaps, {
+  load: {
+    key: 'AIzaSyCbMGRUwcqKjlYX4h4-P6t-xcDryRYLmCM'
+  },
+})
 
 Vue.component('loading', Loading)
 Vue.component('center-container', CenterContainer)

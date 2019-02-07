@@ -43,6 +43,7 @@ squidexApi.createMember = (member) => new Promise((resolve, reject) => {
   setTimeout(() => {
     try {
       makeXMLHTTPRequest({url: url, method: 'POST', data: '{ name: { iv: \'' + member.name + '\' }, username: { iv: \'' + member.username + '\' }, password: { iv: \'' + member.password + '\' }}'}).then((value) => {
+        alert(value)
         resolve({ id: value.id, username: value.data.username.iv, name: value.data.name.iv })
       }, (reason) => {
         reject(new Error(reason))
@@ -61,8 +62,9 @@ squidexApi.updateMember = (member) => new Promise((resolve, reject) => {
   var url = squidexApi.url + '/api/content/' + squidexApi.appName + '/members/' + member.id
   setTimeout(() => {
     try {
-      makeXMLHTTPRequest({url: url, method: 'PUT', data: {username: { iv: member.username }, password: { iv: member.password }}}).then((value) => {
-        resolve({ id: value.id, username: value.data.username.iv })
+      makeXMLHTTPRequest({url: url, method: 'PUT', data: '{ name: { iv: \'' + member.name + '\' }, username: { iv: \'' + member.username + '\' }, password: { iv: \'' + member.password + '\' }}'}).then((value) => {
+        value = JSON.parse(value)
+        resolve({ id: member.id, name: value.name.iv, username: value.username.iv })
       }, (reason) => {
         reject(new Error(reason))
       })

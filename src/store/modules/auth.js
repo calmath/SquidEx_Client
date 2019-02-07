@@ -1,5 +1,5 @@
 /* eslint-disable promise/param-names */
-import { AUTH_REQUEST, AUTH_ERROR, AUTH_SUCCESS, AUTH_LOGOUT, REGISTER_REQUEST, REGISTER_ERROR, REGISTER_SUCCESS } from '../actions/auth'
+import { AUTH_REQUEST, AUTH_ERROR, AUTH_SUCCESS, AUTH_LOGOUT, REGISTER_REQUEST, REGISTER_ERROR, REGISTER_SUCCESS, UPDATE_REQUEST, UPDATE_SUCCESS, UPDATE_ERROR } from '../actions/auth'
 import squidexApi from 'utils/squidexApi'
 
 const state = { profile: localStorage.getItem('user-profile') || {}, status: '', hasLoadedOnce: false }
@@ -64,6 +64,27 @@ const actions = {
         reject(err)
       })
     })
+  },
+  [UPDATE_REQUEST]: ({commit}, user) => {
+    return new Promise((resolve, reject) => {
+      commit(UPDATE_REQUEST)
+      squidexApi.updateMember(user)
+      .then(profile => {
+        if (profile) {
+          localStorage.setItem('user-profile', profile)
+          commit(UPDATE_SUCCESS, profile)
+          resolve()
+        } else {
+          commit(UPDATE_ERROR, 'User details incorrect')
+          reject(new Error('User details incorrect'))
+        }
+      })
+      .catch(err => {
+        commit(UPDATE_ERROR, err)
+        localStorage.removeItem('user-profile')
+        reject(err)
+      })
+    })
   }
 }
 
@@ -92,6 +113,18 @@ const mutations = {
     state.hasLoadedOnce = true
   },
   [REGISTER_ERROR]: (state) => {
+    state.status = 'error'
+    state.hasLoadedOnce = true
+  },
+  [UPDATE_REQUEST]: (state) => {
+    state.status = 'loading'
+  },
+  [UPDATE_SUCCESS]: (state, profile) => {
+    state.status = 'success'
+    state.profile = profile
+    state.hasLoadedOnce = true
+  },
+  [UPDATE_ERROR]: (state) => {
     state.status = 'error'
     state.hasLoadedOnce = true
   }
