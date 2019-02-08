@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from 'components/home'
+import Map from 'components/map'
 import Feed from 'components/feed'
 import Login from 'components/auth'
 import Register from 'components/auth/register'
@@ -32,6 +33,11 @@ export default new Router({
       path: '/',
       name: 'Home',
       component: Home,
+    },
+    {
+      path: '/map',
+      name: 'Map',
+      component: Map,
     },
     {
       path: '/feed',

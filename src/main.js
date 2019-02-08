@@ -32,6 +32,7 @@ Vue.use(VueGoogleMaps, {
 
 Vue.component('loading', Loading)
 Vue.component('center-container', CenterContainer)
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

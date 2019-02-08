@@ -9,6 +9,7 @@
       <!-- [MENU ITEMS] -->
       <ul>
         <li><router-link to="/">Home</router-link></li>
+        <li><router-link to="/map/">Map</router-link></li>
         <li><router-link to="/feed/">Feed</router-link></li>
         <li v-if="isAuthenticated">
           <router-link to="/profile">{{name}}</router-link>

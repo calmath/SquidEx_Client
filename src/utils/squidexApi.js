@@ -97,6 +97,23 @@ squidexApi.authenticateMember = (member) => new Promise((resolve, reject) => {
   }, 1000)
 })
 
+squidexApi.getLocations = (token) => new Promise((resolve, reject) => {
+  squidexApi.authToken = token
+  var url = squidexApi.url + '/api/content/' + squidexApi.appName + '/members'
+  setTimeout(() => {
+    try {
+      makeXMLHTTPRequest({url: url, method: 'GET'}).then((value) => {
+        var members = JSON.parse(value)
+        resolve({ total: members.total, locations: squidexModels.transformMembers(members.items) })
+      }, (reason) => {
+        reject(new Error(reason))
+      })
+    } catch (err) {
+      reject(new Error(err))
+    }
+  }, 1000)
+})
+
 squidexApi.getFeeds = (token) => new Promise((resolve, reject) => {
   squidexApi.authToken = token
   var url = squidexApi.url + '/api/content/' + squidexApi.appName + '/feeds'
