@@ -2,11 +2,12 @@
   <div>
     <loading v-if="loading"/>
     <div v-if="isAuthenticated">
-      Authenticated
+      Authenticated - should just redirect to an appropriate screen - actions / what do you want to do
     </div>
     <div v-if="!isAuthenticated && authStatus !== 'loading'">
-      <h1>Welcome!</h1>
-      <p>Some copy</p>
+      <h1>Splash screen</h1>
+      <p>Push the user off to register or login</p>
+      <p>Need to add in auto login - remember me</p>
     </div>
   </div>
 </template>

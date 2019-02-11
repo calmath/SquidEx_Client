@@ -74,6 +74,23 @@ squidexApi.updateMember = (member) => new Promise((resolve, reject) => {
   }, 1000)
 })
 
+squidexApi.updateMemberLocation = (member) => new Promise((resolve, reject) => {
+  squidexApi.authToken = member.token
+  var url = squidexApi.url + '/api/content/' + squidexApi.appName + '/members/' + member.id
+  setTimeout(() => {
+    try {
+      makeXMLHTTPRequest({url: url, method: 'PUT', data: '{ location: { iv: { latitude: \'' + member.location.lat + '\', longitude: \'' + member.location.lng + '\' }}}'}).then((value) => {
+        value = JSON.parse(value)
+        resolve({ id: member.id })
+      }, (reason) => {
+        reject(new Error(reason))
+      })
+    } catch (err) {
+      reject(new Error(err))
+    }
+  }, 1000)
+})
+
 squidexApi.authenticateMember = (member) => new Promise((resolve, reject) => {
   squidexApi.authToken = member.token
   const hash = crypto.createHash('sha256')
