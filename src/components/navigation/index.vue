@@ -11,16 +11,16 @@
         <li><router-link to="/">Home</router-link></li>
         <li><router-link to="/map/">Map</router-link></li>
         <li><router-link to="/feed/">Feed</router-link></li>
-        <li v-if="isAuthenticated">
+        <li v-if="authStatus === 'success'">
           <router-link to="/profile">{{name}}</router-link>
         </li>
-        <li v-if="isAuthenticated" @click="logout">
+        <li v-if="authStatus === 'success'" @click="logout">
           <span class="logout">Logout</span>
         </li>
-        <li v-if="!isAuthenticated && !authLoading">
+        <li v-if="authStatus != 'success' && !authLoading">
           <router-link to="/login">Login</router-link>
         </li>
-        <li v-if="!isAuthenticated && !authLoading">
+        <li v-if="authStatus != 'success' && !authLoading">
           <router-link to="/register">Register</router-link>
         </li>
       </ul>
@@ -134,7 +134,7 @@
       }
     },
     computed: {
-      ...mapGetters(['getProfile', 'isAuthenticated']),
+      ...mapGetters(['getProfile', 'isAuthenticated', 'authStatus']),
       ...mapState({
         authLoading: state => state.auth.status === 'loading',
         name: state => `${state.auth.profile.name}`,

@@ -1,12 +1,13 @@
 /* eslint-disable promise/param-names */
-import { AUTH_REQUEST, AUTH_ERROR, AUTH_SUCCESS, AUTH_LOGOUT, REGISTER_REQUEST, REGISTER_ERROR, REGISTER_SUCCESS, UPDATE_REQUEST, UPDATE_SUCCESS, UPDATE_ERROR } from '../actions/auth'
+import { AUTH_REQUEST, AUTH_ERROR, AUTH_SUCCESS, AUTH_LOGOUT, REGISTER_REQUEST, REGISTER_ERROR, REGISTER_SUCCESS, PROFILE_REQUEST, PROFILE_SUCCESS, PROFILE_ERROR, UPDATE_REQUEST, UPDATE_SUCCESS, UPDATE_ERROR } from '../actions/auth'
 import squidexApi from 'utils/squidexApi'
 
-const state = { profile: localStorage.getItem('user-profile') || {}, status: '', hasLoadedOnce: false }
+const state = { profileId: localStorage.getItem('user-profileId'), profile: localStorage.getItem('user-profile') || {}, status: '', hasLoadedOnce: false }
 
 const getters = {
-  isAuthenticated: state => !!state.profile.id,
+  isAuthenticated: state => !!state.profileId,
   authStatus: state => state.status,
+  profileId: state => state.profileId,
 }
 
 const actions = {
@@ -17,19 +18,40 @@ const actions = {
       .then(profile => {
         if (profile) {
           localStorage.setItem('user-profile', profile)
+          localStorage.setItem('user-profileId', profile.id)
           commit(AUTH_SUCCESS, profile)
           resolve()
         } else {
           commit(AUTH_ERROR, 'User details incorrect')
           reject(new Error('User details incorrect'))
         }
-        // Here set the header of your ajax library to the token value.
-        // example with axios
-        // axios.defaults.headers.common['Authorization'] = resp.token
       })
       .catch(err => {
         commit(AUTH_ERROR, err)
+        // localStorage.removeItem('user-profile')
+        // localStorage.removeItem('user-profileId')
+        reject(err)
+      })
+    })
+  },
+  [PROFILE_REQUEST]: ({commit}, user) => {
+    return new Promise((resolve, reject) => {
+      commit(PROFILE_REQUEST)
+      squidexApi.getMember(user)
+      .then(profile => {
+        if (profile) {
+          localStorage.setItem('user-profile', profile)
+          commit(PROFILE_SUCCESS, profile)
+          resolve()
+        } else {
+          commit(PROFILE_ERROR, 'User details incorrect')
+          reject(new Error('User details incorrect'))
+        }
+      })
+      .catch(err => {
+        commit(PROFILE_ERROR, err)
         localStorage.removeItem('user-profile')
+        localStorage.removeItem('user-profileId')
         reject(err)
       })
     })
@@ -38,6 +60,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       commit(AUTH_LOGOUT)
       localStorage.removeItem('user-profile')
+      localStorage.removeItem('user-profileId')
       resolve()
     })
   },
@@ -54,13 +77,11 @@ const actions = {
           commit(REGISTER_ERROR, 'User details incorrect')
           reject(new Error('User details incorrect'))
         }
-        // Here set the header of your ajax library to the token value.
-        // example with axios
-        // axios.defaults.headers.common['Authorization'] = resp.token
       })
       .catch(err => {
         commit(REGISTER_ERROR, err)
         localStorage.removeItem('user-profile')
+        localStorage.removeItem('user-profileId')
         reject(err)
       })
     })
@@ -68,22 +89,42 @@ const actions = {
   [UPDATE_REQUEST]: ({commit}, user) => {
     return new Promise((resolve, reject) => {
       commit(UPDATE_REQUEST)
-      squidexApi.updateMember(user)
-      .then(profile => {
-        if (profile) {
-          localStorage.setItem('user-profile', profile)
-          commit(UPDATE_SUCCESS, profile)
-          resolve()
-        } else {
-          commit(UPDATE_ERROR, 'User details incorrect')
-          reject(new Error('User details incorrect'))
-        }
-      })
-      .catch(err => {
-        commit(UPDATE_ERROR, err)
-        localStorage.removeItem('user-profile')
-        reject(err)
-      })
+      if (user.location) {
+        squidexApi.updateMemberLocation(user)
+        .then(profile => {
+          if (profile) {
+            commit(UPDATE_SUCCESS, state.profile)
+            resolve()
+          } else {
+            commit(UPDATE_ERROR, 'User details incorrect')
+            reject(new Error('User details incorrect'))
+          }
+        })
+        .catch(err => {
+          commit(UPDATE_ERROR, err)
+          localStorage.removeItem('user-profile')
+          localStorage.removeItem('user-profileId')
+          reject(err)
+        })
+      } else {
+        squidexApi.updateMember(user)
+        .then(profile => {
+          if (profile) {
+            localStorage.setItem('user-profile', profile)
+            commit(UPDATE_SUCCESS, profile)
+            resolve()
+          } else {
+            commit(UPDATE_ERROR, 'User details incorrect')
+            reject(new Error('User details incorrect'))
+          }
+        })
+        .catch(err => {
+          commit(UPDATE_ERROR, err)
+          localStorage.removeItem('user-profile')
+          localStorage.removeItem('user-profileId')
+          reject(err)
+        })
+      }
     })
   }
 }
@@ -94,10 +135,24 @@ const mutations = {
   },
   [AUTH_SUCCESS]: (state, profile) => {
     state.status = 'success'
+    state.profileId = profile.id
     state.profile = profile
     state.hasLoadedOnce = true
   },
   [AUTH_ERROR]: (state) => {
+    state.status = 'error'
+    state.hasLoadedOnce = true
+  },
+  [PROFILE_REQUEST]: (state) => {
+    state.status = 'loading'
+  },
+  [PROFILE_SUCCESS]: (state, profile) => {
+    state.status = 'success'
+    state.profileId = profile.id
+    state.profile = profile
+    state.hasLoadedOnce = true
+  },
+  [PROFILE_ERROR]: (state) => {
     state.status = 'error'
     state.hasLoadedOnce = true
   },

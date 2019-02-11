@@ -114,6 +114,27 @@ squidexApi.authenticateMember = (member) => new Promise((resolve, reject) => {
   }, 1000)
 })
 
+squidexApi.getMember = (member) => new Promise((resolve, reject) => {
+  squidexApi.authToken = member.token
+  var url = squidexApi.url + '/api/content/' + squidexApi.appName + '/members/' + member.id
+  setTimeout(() => {
+    try {
+      makeXMLHTTPRequest({url: url, method: 'GET'}).then((value) => {
+        var member = JSON.parse(value)
+        if (member) {
+          resolve({ id: member.id, username: member.data.username.iv, name: member.data.name.iv })
+        } else {
+          reject(new Error('User details incorrect'))
+        }
+      }, (reason) => {
+        reject(new Error(reason))
+      })
+    } catch (err) {
+      reject(new Error(err))
+    }
+  }, 1000)
+})
+
 squidexApi.getLocations = (token) => new Promise((resolve, reject) => {
   squidexApi.authToken = token
   var url = squidexApi.url + '/api/content/' + squidexApi.appName + '/members'

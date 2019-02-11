@@ -13,18 +13,60 @@
 <script>
 import Navigation from 'components/navigation'
 import { INIT_REQUEST } from 'actions/init'
-import { USER_REQUEST } from 'actions/user'
+import { PROFILE_REQUEST, UPDATE_REQUEST } from 'actions/auth'
 import SqreenFooter from './components/footer/index.vue'
 
 export default {
+  data () {
+    return {
+      intervalId: ''
+    }
+  },
   components: {
     SqreenFooter,
     Navigation },
   name: 'app',
   created: function () {
-    this.$store.dispatch(INIT_REQUEST)
-    if (this.$store.getters.isAuthenticated) {
-      this.$store.dispatch(USER_REQUEST)
+    if (!this.$store.getters.isTokenLoaded) {
+      this.$store.dispatch(INIT_REQUEST).then(() => {
+        if (this.$store.getters.isAuthenticated) {
+          var token = this.$store.getters.getSquidexToken
+          var id = this.$store.getters.profileId
+          this.$store.dispatch(PROFILE_REQUEST, { id, token })
+          // this.setRefresh()
+        }
+      })
+    } else {
+      if (this.$store.getters.isAuthenticated) {
+        var token = this.$store.getters.getSquidexToken
+        var id = this.$store.getters.profileId
+        this.$store.dispatch(PROFILE_REQUEST, { id, token })
+        // this.setRefresh()
+      }
+    }
+  },
+  beforeDestroy () {
+    clearInterval(this.intervalId)
+  },
+  methods: {
+    setRefresh () {
+      if (this.$store.getters.isAuthenticated) {
+        var v = this
+        this.intervalId = setInterval(function () {
+          v.pushLocation()
+        }, 2000)
+      }
+    },
+    pushLocation () {
+      var token = this.$store.getters.getSquidexToken
+      var id = this.$store.getters.profileId
+
+      navigator.geolocation.getCurrentPosition(position => {
+        var location = { lat: position.coords.latitude, lng: position.coords.longitude }
+        this.$store.dispatch(UPDATE_REQUEST, { id, location, token }).then(() => {
+          console.log('push location')
+        })
+      })
     }
   }
 }
