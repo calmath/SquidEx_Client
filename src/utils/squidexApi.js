@@ -62,7 +62,7 @@ squidexApi.updateMember = (member) => new Promise((resolve, reject) => {
   var url = squidexApi.url + '/api/content/' + squidexApi.appName + '/members/' + member.id
   setTimeout(() => {
     try {
-      makeXMLHTTPRequest({url: url, method: 'PUT', data: '{ name: { iv: \'' + member.name + '\' }, username: { iv: \'' + member.username + '\' }, password: { iv: \'' + member.password + '\' }}'}).then((value) => {
+      makeXMLHTTPRequest({url: url, method: 'PATCH', data: '{ name: { iv: \'' + member.name + '\' }, username: { iv: \'' + member.username + '\' }, password: { iv: \'' + member.password + '\' }}'}).then((value) => {
         value = JSON.parse(value)
         resolve({ id: member.id, name: value.name.iv, username: value.username.iv })
       }, (reason) => {
@@ -79,7 +79,7 @@ squidexApi.updateMemberLocation = (member) => new Promise((resolve, reject) => {
   var url = squidexApi.url + '/api/content/' + squidexApi.appName + '/members/' + member.id
   setTimeout(() => {
     try {
-      makeXMLHTTPRequest({url: url, method: 'PUT', data: '{ location: { iv: { latitude: \'' + member.location.lat + '\', longitude: \'' + member.location.lng + '\' }}}'}).then((value) => {
+      makeXMLHTTPRequest({url: url, method: 'PATCH', data: '{ location: { iv: { latitude: ' + member.location.lat + ', longitude: ' + member.location.lng + ' }}}'}).then((value) => {
         value = JSON.parse(value)
         resolve({ id: member.id })
       }, (reason) => {

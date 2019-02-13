@@ -33,7 +33,7 @@ export default {
           var token = this.$store.getters.getSquidexToken
           var id = this.$store.getters.profileId
           this.$store.dispatch(PROFILE_REQUEST, { id, token })
-          // this.setRefresh()
+          this.setRefresh()
         }
       })
     } else {
@@ -41,7 +41,7 @@ export default {
         var token = this.$store.getters.getSquidexToken
         var id = this.$store.getters.profileId
         this.$store.dispatch(PROFILE_REQUEST, { id, token })
-        // this.setRefresh()
+        this.setRefresh()
       }
     }
   },
@@ -64,7 +64,6 @@ export default {
       navigator.geolocation.getCurrentPosition(position => {
         var location = { lat: position.coords.latitude, lng: position.coords.longitude }
         this.$store.dispatch(UPDATE_REQUEST, { id, location, token }).then(() => {
-          console.log('push location')
         })
       })
     }
