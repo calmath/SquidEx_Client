@@ -2,7 +2,7 @@
 import { AUTH_REQUEST, AUTH_ERROR, AUTH_SUCCESS, AUTH_LOGOUT, REGISTER_REQUEST, REGISTER_ERROR, REGISTER_SUCCESS, PROFILE_REQUEST, PROFILE_SUCCESS, PROFILE_ERROR, UPDATE_REQUEST, UPDATE_SUCCESS, UPDATE_ERROR } from '../actions/auth'
 import squidexApi from 'utils/squidexApi'
 
-const state = { profileId: localStorage.getItem('user-profileId'), profile: localStorage.getItem('user-profile') || {}, status: '', hasLoadedOnce: false }
+const state = { profileId: localStorage.getItem('user-profileId'), profile: localStorage.getItem('user-profile') || {}, status: '' }
 
 const getters = {
   isAuthenticated: state => !!state.profileId,
@@ -28,8 +28,8 @@ const actions = {
       })
       .catch(err => {
         commit(AUTH_ERROR, err)
-        // localStorage.removeItem('user-profile')
-        // localStorage.removeItem('user-profileId')
+        localStorage.removeItem('user-profile')
+        localStorage.removeItem('user-profileId')
         reject(err)
       })
     })
@@ -102,8 +102,6 @@ const actions = {
         })
         .catch(err => {
           commit(UPDATE_ERROR, err)
-          localStorage.removeItem('user-profile')
-          localStorage.removeItem('user-profileId')
           reject(err)
         })
       } else {
@@ -137,11 +135,9 @@ const mutations = {
     state.status = 'success'
     state.profileId = profile.id
     state.profile = profile
-    state.hasLoadedOnce = true
   },
   [AUTH_ERROR]: (state) => {
     state.status = 'error'
-    state.hasLoadedOnce = true
   },
   [PROFILE_REQUEST]: (state) => {
     state.status = 'loading'
@@ -150,38 +146,26 @@ const mutations = {
     state.status = 'success'
     state.profileId = profile.id
     state.profile = profile
-    state.hasLoadedOnce = true
   },
   [PROFILE_ERROR]: (state) => {
     state.status = 'error'
-    state.hasLoadedOnce = true
   },
   [AUTH_LOGOUT]: (state) => {
     state.profile = {}
   },
   [REGISTER_REQUEST]: (state) => {
-    state.status = 'loading'
   },
   [REGISTER_SUCCESS]: (state, profile) => {
-    state.status = 'success'
     state.profile = profile
-    state.hasLoadedOnce = true
   },
   [REGISTER_ERROR]: (state) => {
-    state.status = 'error'
-    state.hasLoadedOnce = true
   },
   [UPDATE_REQUEST]: (state) => {
-    state.status = 'loading'
   },
   [UPDATE_SUCCESS]: (state, profile) => {
-    state.status = 'success'
     state.profile = profile
-    state.hasLoadedOnce = true
   },
   [UPDATE_ERROR]: (state) => {
-    state.status = 'error'
-    state.hasLoadedOnce = true
   }
 }
 
