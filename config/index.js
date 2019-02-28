@@ -77,5 +77,9 @@ module.exports = {
     // `npm run build --report`
     // Set to `true` or `false` to always turn it on or off
     bundleAnalyzerReport: process.env.npm_config_report
+  },
+
+  nginx: {
+    assetsWebRoot: 'D:/Docker/volumes/docker_nginx_webroot/_data'
   }
 }

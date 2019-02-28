@@ -124,14 +124,30 @@ const webpackConfig = merge(baseWebpackConfig, {
       staticFileGlobs: [
         'index.html',
         'manifest.json',
-        'dist/*.{js,css}'
+        'service-worker.js',
+        'dist/static/css/*.css',
+        'dist/static/js/*.js'
       ],
-      stripPrefix: '/'
+      stripPrefix: 'dist/'
     }),
     // robots.txt & sitemap.xml
     new CopyWebpackPlugin([
       {
         from: path.resolve(__dirname, '../src/assets/seo/'),
+        to: config.build.assetsRoot
+      }
+    ]),
+    // manifest.json
+    new CopyWebpackPlugin([
+      {
+        from: path.resolve(__dirname, '../manifest.json'),
+        to: config.build.assetsRoot
+      }
+    ]),
+    // service worker
+    new CopyWebpackPlugin([
+      {
+        from: path.resolve(__dirname, '../service-worker.js'),
         to: config.build.assetsRoot
       }
     ])
