@@ -8,7 +8,6 @@
 <style scoped>
   .feed-item {
     padding: 1em;
-    width: 350px;
   }
 </style>
 <script>

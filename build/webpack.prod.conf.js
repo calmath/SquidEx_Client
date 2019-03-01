@@ -128,7 +128,22 @@ const webpackConfig = merge(baseWebpackConfig, {
         'dist/static/css/*.css',
         'dist/static/js/*.js'
       ],
-      stripPrefix: 'dist/'
+      stripPrefix: 'dist/',
+      runtimeCaching: [{
+        // See https://github.com/GoogleChrome/sw-toolbox#methods
+        urlPattern: /cloud\.squidex\.io\/api\//,
+        handler: 'fastest',
+        // See https://github.com/GoogleChrome/sw-toolbox#options
+        options: {
+          cache: {
+            maxEntries: 10,
+            name: 'runtime-cache'
+          }
+        }
+      }, {
+        // Use a network first strategy for everything else.
+        default: 'networkFirst'
+      }],
     }),
     // robots.txt & sitemap.xml
     new CopyWebpackPlugin([
