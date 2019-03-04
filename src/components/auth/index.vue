@@ -9,6 +9,9 @@
       <hr/>
       <button type="submit">Login</button>
     </form>
+    <div>
+      If you are not a member please <a href="/register">register</a>
+    </div>
   </div>
 </template>
 

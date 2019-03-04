@@ -130,10 +130,8 @@ const webpackConfig = merge(baseWebpackConfig, {
       ],
       stripPrefix: 'dist/',
       runtimeCaching: [{
-        // See https://github.com/GoogleChrome/sw-toolbox#methods
         urlPattern: /cloud\.squidex\.io\/api\//,
         handler: 'fastest',
-        // See https://github.com/GoogleChrome/sw-toolbox#options
         options: {
           cache: {
             maxEntries: 10,

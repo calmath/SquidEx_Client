@@ -20,9 +20,6 @@
         <li v-if="authStatus != 'success' && !authLoading">
           <router-link to="/login">Login</router-link>
         </li>
-        <li v-if="authStatus != 'success' && !authLoading">
-          <router-link to="/register">Register</router-link>
-        </li>
       </ul>
     </nav>
   </header>
