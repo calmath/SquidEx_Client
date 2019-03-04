@@ -2,13 +2,14 @@ import squidexModels from 'utils/squidexModels'
 
 // const bcrypt = require('bcrypt')
 const crypto = require('crypto')
+var config = require('../../settings.json')
 // const saltRounds = 10
 
 const squidexApi = {
   url: 'https://cloud.squidex.io',
-  appName: 'locationtesting',
-  clientId: 'locationtesting:testing',
-  clientSecret: 'z8Ibjx5/n/edRCvg1fYLi/v1mZOR4zPLMZ5jbqfqktA=',
+  appName: config.appName,
+  clientId: config.clientId,
+  clientSecret: config.clientSecret,
   authToken: {}
 }
 
