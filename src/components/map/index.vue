@@ -4,35 +4,24 @@
     <div v-if="!isTokenLoaded">
       Loading
     </div>
-    <div v-if="isTokenLoaded">
-      <h1>Welcome!</h1>
-      <GmapMap
-        :center="center"
-        :zoom="12"
-        ref="mmm"
-        map-type-id="terrain"
-        style="width: 800px; height: 550px"
-      >
-        <gmap-info-window :options="infoOptions" :position="infoWindowPos" :opened="infoWinOpen" @closeclick="infoWinOpen=false">
-          {{infoContent}}
-        </gmap-info-window>
-        <GmapMarker :key="index" v-for="(m, index) in markers" :position="m.position" :clickable="true" :draggable="false" @click="toggleInfoWindow(m,index)"/>
-      </GmapMap>
+    <div>
+      <h1>Welcome!!</h1>
+      <div id="mapid"></div>
     </div>
   </div>
 </template>
 
 <style>
-  .home {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
+  #mapid { 
+    height: 500px;
+    width: 500px;
   }
 </style>
 
 <script>
   import squidexApi from 'utils/squidexApi'
   import { mapGetters, mapState } from 'vuex'
+  import L from 'leaflet'
 
   export default {
     name: 'map',
@@ -64,15 +53,22 @@
       }
     },
     mounted () {
-
+      var map = L.map('mapid')
+      map.setView([51.505, -0.09], 13)
+      L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        maxZoom: 18,
+        id: 'mapbox.streets',
+        accessToken: 'pk.eyJ1IjoibWFya2FtZXMiLCJhIjoiY2pzeng0bmVyMGVqMTQzdGh4ZWhsMzhpNSJ9.9ooXU5HPk5yffjhnZT0HJw'
+      }).addTo(map)
     },
     created () {
       navigator.geolocation.getCurrentPosition(position => {
-        var myPosition = { lat: position.coords.latitude, lng: position.coords.longitude }
-        this.$refs.mmm.panTo(myPosition)
-        this.markers.push({position: myPosition, infoText: 'My location'})
+        // var myPosition = { lat: position.coords.latitude, lng: position.coords.longitude }
+        // this.$refs.mmm.panTo(myPosition)
+        // this.markers.push({position: myPosition, infoText: 'My location'})
       })
-      this.setRefresh()
+      // this.setRefresh()
     },
     beforeDestroy () {
       clearInterval(this.intervalId)
@@ -91,14 +87,14 @@
         squidexApi.getLocations(token)
           .then(resp => {
             this.locations = resp
-            this.markers = []
-            this.markers.push(...resp.locations)
+            // this.markers = []
+            // this.markers.push(...resp.locations)
           })
           .catch(resp => {
             alert(resp)
           })
       },
-      toggleInfoWindow: function (marker, idx) {
+      /* toggleInfoWindow: function (marker, idx) {
         this.infoWindowPos = marker.position
         this.infoContent = marker.infoText
         // check if its the same marker that was selected if yes toggle
@@ -108,7 +104,7 @@
           this.infoWinOpen = true
           this.currentMidx = idx
         }
-      }
+      } */
     }
   }
 </script>

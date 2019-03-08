@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from 'components/home'
 import Map from 'components/map'
-import Leaflet from 'components/map/leaflet'
 import Feed from 'components/feed'
 import Login from 'components/auth'
 import Register from 'components/auth/register'
@@ -39,11 +38,6 @@ export default new Router({
       path: '/map',
       name: 'Map',
       component: Map,
-    },
-    {
-      path: '/mapV2',
-      name: 'Leaflet',
-      component: Leaflet,
     },
     {
       path: '/feed',
