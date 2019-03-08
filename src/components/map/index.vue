@@ -1,20 +1,16 @@
 <template>
   <div>
-    <loading v-if="loading"/>
-    <div v-if="!isTokenLoaded">
-      Loading
-    </div>
-    <div>
-      <h1>Welcome!!</h1>
-      <div id="mapid"></div>
-    </div>
+    <div id="mapid"></div>
   </div>
 </template>
 
 <style>
-  #mapid { 
-    height: 500px;
-    width: 500px;
+  #mapid {
+    position: absolute;
+    top: 38px;
+    left: 0;
+    height: calc(100% - 68px);
+    width: 100%;
   }
 </style>
 
@@ -31,16 +27,7 @@
         markers: [],
         center: { lat: 0, lng: 0 },
         locations: { total: 0, locations: [] },
-        infoContent: '',
-        infoWindowPos: null,
-        infoWinOpen: false,
-        currentMidx: null,
-        infoOptions: {
-          pixelOffset: {
-            width: 0,
-            height: -35
-          }
-        },
+        map: null
       }
     },
     computed: {
@@ -53,22 +40,22 @@
       }
     },
     mounted () {
-      var map = L.map('mapid')
-      map.setView([51.505, -0.09], 13)
-      L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
-        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-        maxZoom: 18,
-        id: 'mapbox.streets',
-        accessToken: 'pk.eyJ1IjoibWFya2FtZXMiLCJhIjoiY2pzeng0bmVyMGVqMTQzdGh4ZWhsMzhpNSJ9.9ooXU5HPk5yffjhnZT0HJw'
-      }).addTo(map)
+      this.map = L.map('mapid')
+      navigator.geolocation.getCurrentPosition(position => {
+        var myPosition = { lat: position.coords.latitude, lng: position.coords.longitude }
+        this.map.setView([myPosition.lat, myPosition.lng], 16)
+        L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+          attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+          maxZoom: 18,
+          id: 'mapbox.streets',
+          accessToken: 'pk.eyJ1IjoibWFya2FtZXMiLCJhIjoiY2pzeng0bmVyMGVqMTQzdGh4ZWhsMzhpNSJ9.9ooXU5HPk5yffjhnZT0HJw'
+        }).addTo(this.map)
+        var marker = L.marker([myPosition.lat, myPosition.lng]).addTo(this.map)
+        marker.bindPopup('My location')
+      })
     },
     created () {
-      navigator.geolocation.getCurrentPosition(position => {
-        // var myPosition = { lat: position.coords.latitude, lng: position.coords.longitude }
-        // this.$refs.mmm.panTo(myPosition)
-        // this.markers.push({position: myPosition, infoText: 'My location'})
-      })
-      // this.setRefresh()
+      this.setRefresh()
     },
     beforeDestroy () {
       clearInterval(this.intervalId)
@@ -87,24 +74,15 @@
         squidexApi.getLocations(token)
           .then(resp => {
             this.locations = resp
-            // this.markers = []
-            // this.markers.push(...resp.locations)
+            for (let location of resp.locations) {
+              var marker = L.marker(location.position).addTo(this.map)
+              marker.bindPopup(location.infoText)
+            }
           })
           .catch(resp => {
             alert(resp)
           })
       },
-      /* toggleInfoWindow: function (marker, idx) {
-        this.infoWindowPos = marker.position
-        this.infoContent = marker.infoText
-        // check if its the same marker that was selected if yes toggle
-        if (this.currentMidx === idx) {
-          this.infoWinOpen = !this.infoWinOpen
-        } else {
-          this.infoWinOpen = true
-          this.currentMidx = idx
-        }
-      } */
     }
   }
 </script>
