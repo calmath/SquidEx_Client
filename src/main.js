@@ -6,6 +6,7 @@ import router from './router'
 import store from './store'
 import Loading from 'components/lib/loading'
 import CenterContainer from 'components/lib/center-container'
+// import appInsights from 'applicationinsights'
 
 const prod = process.env.NODE_ENV === 'production'
 const shouldSW = 'serviceWorker' in navigator && prod
@@ -20,6 +21,8 @@ if (shouldSW) {
     console.log('Service Worker Registered!')
   })
 }
+
+// appInsights.setup('95ad5e59-65cb-41f4-852f-3759163e1a41')
 
 Vue.config.productionTip = false
 
